@@ -30,3 +30,29 @@ if target_column_name in df.columns:
     print(df[target_column_name].value_counts())
 else:
     print(f"\nWARNING: Target column '{target_column_name}' not found. Please inspect your CSV columns and update 'target_column_name'.")
+
+columns_to_drop = ['id', 'Unnamed: 32'] 
+existing_cols_to_drop = [col for col in columns_to_drop if col in df.columns]
+
+X = df.drop(columns=[target_column_name] + existing_cols_to_drop, axis=1)
+
+y = df[target_column_name]
+if y.dtype == 'object':
+    from sklearn.preprocessing import LabelEncoder
+    le = LabelEncoder()
+    y = pd.Series(le.fit_transform(y), name=target_column_name)
+    print("\nEncoded target variable to numeric (0 and 1).")
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.30, random_state=42, stratify=y 
+)
+
+print(f"\nX_train shape: {X_train.shape}")
+print(f"X_test shape: {X_test.shape}")
+
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+print("\nData splitting and feature scaling complete.")
