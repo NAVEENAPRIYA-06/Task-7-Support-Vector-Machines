@@ -156,3 +156,25 @@ y_full = np.concatenate((y_train, y_test))
 
 plot_decision_boundary(X_full_pca, y_full, svc_pca, 
                        'RBF SVM Decision Boundary on First Two Principal Components')
+
+from sklearn.model_selection import GridSearchCV
+
+print("\n--- 9. Starting Grid Search for Hyperparameter Tuning (C and gamma) ---")
+param_grid = {
+    'C': [0.1, 1, 10, 100], 
+    'gamma': [1, 0.1, 0.01, 0.001],
+    'kernel': ['rbf'] # We only tune RBF here as it is more complex
+}
+grid = GridSearchCV(SVC(random_state=42), param_grid, refit=True, verbose=2, cv=10, scoring='accuracy')
+grid.fit(X_train, y_train)
+
+print("Grid Search complete.")
+print("\n--- 10. Best Hyperparameters and Final Evaluation ---")
+print(f"Best parameters found on training set: {grid.best_params_}")
+print(f"Best cross-validation score (Accuracy): {grid.best_score_:.4f}")
+y_pred_best = grid.predict(X_test)
+print("\n[Best RBF SVM Model] Evaluation on Unseen Test Set:")
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred_best))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_best, digits=4))
