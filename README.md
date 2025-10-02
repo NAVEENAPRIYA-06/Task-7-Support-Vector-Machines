@@ -22,11 +22,11 @@ Key Steps and Results:
 ### 1. Baseline Model Performance
 The initial models (Linear and default RBF) were trained on the full 30 features. This section details the performance metrics of one of the baseline models.
 
- **[Click here to view the Baseline Classification Report](screenshots/Classification_Report.png)**
+ **[Click here to view the Baseline Classification Report](Screenshots/Classification_Report.png)**
 
 ### 2. Decision Boundary Visualization (Using PCA)
 Since the dataset has 30 features, **Principal Component Analysis (PCA)** was used to reduce the data to 2 dimensions. This allowed us to train a 2D RBF SVM model and visualize its non-linear separation boundary.
 
- **[Click here to view the 2D RBF Decision Boundary Plot](screenshots/RBF_Plot.png)**
+ **[Click here to view the 2D RBF Decision Boundary Plot](Screenshots/RBF_Plot.png)**
 
  -----------------------------------------------------------------------------------------------------------------------
