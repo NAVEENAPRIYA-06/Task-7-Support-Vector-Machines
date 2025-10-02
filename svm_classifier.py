@@ -113,3 +113,46 @@ print(confusion_matrix(y_test, y_pred_rbf))
 # Classification Report (Metrics)
 print("\nClassification Report (Accuracy, Precision, Recall, F1-score):")
 print(classification_report(y_test, y_pred_rbf, digits=4))
+
+from sklearn.decomposition import PCA
+
+print("\n--- 8. Preparing Data for 2D Visualization using PCA ---")
+
+pca = PCA(n_components=2)
+
+# Fit PCA on the TRAINING set and transform both sets
+X_train_pca = pca.fit_transform(X_train)
+X_test_pca = pca.transform(X_test)
+
+svc_pca = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=42)
+svc_pca.fit(X_train_pca, y_train.values) # .values needed because y was a Series
+
+print("RBF SVM trained on 2 principal components.")
+def plot_decision_boundary(X, y, model, title):
+    # Create a mesh grid for plotting
+    h = .02  # step size in the mesh
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+
+    # Predict the class for each point in the mesh
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    # Plot the contour and the training points
+    plt.figure(figsize=(10, 7))
+    plt.contourf(xx, yy, Z, alpha=0.3, cmap=plt.cm.coolwarm)
+
+    # Plot the data points
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.coolwarm, s=50, edgecolors='k')
+
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title(title)
+    plt.show()
+X_full_pca = np.vstack((X_train_pca, X_test_pca))
+y_full = np.concatenate((y_train, y_test))
+
+plot_decision_boundary(X_full_pca, y_full, svc_pca, 
+                       'RBF SVM Decision Boundary on First Two Principal Components')
